@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import shlex
+import sys
 import tempfile
 from collections.abc import Mapping
 from dataclasses import dataclass, field
@@ -207,7 +208,7 @@ class Runner:
         self.client_checked = 0
 
     def _context(self, workdir: Path) -> dict[str, Any]:
-        return {"workdir": str(workdir), "case_dir": str(self.cf.base)}
+        return {"workdir": str(workdir), "case_dir": str(self.cf.base), "python": sys.executable}
 
     def _server_spec(self, ctx: Mapping[str, Any]) -> ServerSpec:
         if self.server_override is not None:
@@ -224,7 +225,8 @@ class Runner:
             command=[str(c) for c in substitute(command, ctx)] if command else None,
             url=substitute(spec.get("url"), ctx),
             env={k: str(v) for k, v in substitute(spec.get("env", {}), ctx).items()},
-            cwd=str(self.cf.base / substitute(spec["cwd"], ctx)) if spec.get("cwd") else None,
+            # a command in the case file runs in the case file's directory
+            cwd=str(self.cf.base / substitute(spec.get("cwd", "."), ctx)),
             mode=str(spec.get("mode", "auto")),
         )
 

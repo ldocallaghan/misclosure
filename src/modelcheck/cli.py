@@ -12,10 +12,17 @@ import anyio
 from modelcheck import __version__
 
 
+def _leaf_errors(exc: BaseException) -> list[BaseException]:
+    if isinstance(exc, BaseExceptionGroup):
+        return [e for sub in exc.exceptions for e in _leaf_errors(sub)]
+    return [exc]
+
+
 def _conform(args: argparse.Namespace) -> int:
     from modelcheck.client import ServerSpec
     from modelcheck.conform import report
     from modelcheck.conform.runner import CaseFile, Runner
+    from modelcheck.reference import ReferenceError
 
     cf = CaseFile.load(args.cases)
     server = None
@@ -40,6 +47,16 @@ def _conform(args: argparse.Namespace) -> int:
             errlog=errlog,
         )
         result = anyio.run(runner.run)
+    except ReferenceError as exc:
+        print(f"error: the reference could not be made: {exc}", file=sys.stderr)
+        return 2
+    except Exception as exc:  # the SDK reports a server that will not start as a group
+        leaves = list(_leaf_errors(exc))
+        print("error: the server run failed:", file=sys.stderr)
+        for e in leaves:
+            print(f"  {type(e).__name__}: {e}", file=sys.stderr)
+        print("Run with --server-log to keep the server's stderr.", file=sys.stderr)
+        return 2
     finally:
         if errlog:
             errlog.close()
