@@ -1,0 +1,40 @@
+# The growth server's faulty tools, for tests/test_growth_server.py.
+
+modelcheck: 1
+name: growth server faults
+
+reference:
+  command: ["${python}", ../server/reference.py, "${out}"]
+
+server:
+  command: ["${python}", ../server/growth_server.py]
+
+cases:
+  # 1 ulp off in one cell: a failure
+  - id: one_ulp
+    steps:
+      - call: grow_faulty
+        arguments: {principal: 100.0, rate: 0.05, years: 10}
+        checks:
+          - table: {output: rows, reference: five_percent.rows}
+
+  # the same output, with a declared tolerance: passes, and the report lists it
+  - id: one_ulp_tolerated
+    steps:
+      - call: grow_faulty
+        arguments: {principal: 100.0, rate: 0.05, years: 10}
+        checks:
+          - table:
+              output: rows
+              reference: five_percent.rows
+              tolerance:
+                value: {rel: 1.0e-15, reason: test of a declared tolerance}
+
+  # doubles written with 15 significant digits: bits lost in JSON
+  - id: short_json
+    steps:
+      - call: grow_short_json
+        arguments: {principal: 0.1, rate: 0.07, years: 30}
+        checks:
+          - table: {output: rows, reference: awkward.rows}
+          - value: {output: doubling_time, reference: awkward.doubling_time}

@@ -1,0 +1,29 @@
+# Quick start: the growth server in tests/server against its reference.
+#
+#   modelcheck conform examples/testserver/cases.yaml
+
+modelcheck: 1
+name: growth server
+
+reference:
+  command: ["${python}", ../../tests/server/reference.py, "${out}"]
+
+server:
+  command: ["${python}", ../../tests/server/growth_server.py]
+
+cases:
+  - id: five_percent
+    steps:
+      - call: grow
+        arguments: {principal: 100.0, rate: 0.05, years: 10}
+        checks:
+          - table: {output: rows, reference: five_percent.rows, keys: [year]}
+          - value: {output: doubling_time, reference: five_percent.doubling_time}
+
+  - id: awkward
+    steps:
+      - call: grow
+        arguments: {principal: 0.1, rate: 0.07, years: 30}
+        checks:
+          - table: {output: rows, reference: awkward.rows}
+          - value: {output: doubling_time, reference: awkward.doubling_time}
