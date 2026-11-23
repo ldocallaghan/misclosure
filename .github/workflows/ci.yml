@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    name: Tests, ruff, and the encoders in R and Julia
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - name: Install jsonlite
+        run: Rscript -e 'install.packages("jsonlite")'
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1.11"
+      - run: uv sync --locked -p 3.11
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - name: Unit tests, the growth server over stdio and HTTP, and the encoders
+        run: MODELCHECK_JULIA=julia uv run pytest -v
+
+  kite:
+    # The proof against kite-mcp needs R, KITE at its pinned commit and a
+    # kite-mcp build. It runs when the repository variable MODELCHECK_KITE is 1.
+    name: Proof against kite-mcp
+    if: vars.MODELCHECK_KITE == '1'
+    runs-on: ubuntu-24.04
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: ldocallaghan/kite-mcp
+          path: kite-mcp
+      - uses: astral-sh/setup-uv@v6
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: "4.6.2"
+          use-public-rspm: true
+      - name: Install R packages and KITE at kite-mcp's pinned commit
+        run: Rscript kite-mcp/scripts/install-r-deps.R
+      - name: Build kite-mcp
+        run: cargo build --release --manifest-path kite-mcp/Cargo.toml
+      - run: uv sync --locked -p 3.11
+      - name: Conformance and scoring against kite-mcp
+        run: |
+          export KITE_MCP_DIR="$GITHUB_WORKSPACE/kite-mcp"
+          export KITE_MCP_BIN="$KITE_MCP_DIR/target/release/kite-mcp"
+          MODELCHECK_KITE=1 uv run pytest -v tests/test_kite.py
+          uv run modelcheck conform examples/kite/cases.yaml --junit conformance-junit.xml
