@@ -1,0 +1,113 @@
+# Converted from kite-mcp's eval/questions.json by convert_questions.py
+- id: q01
+  label: caliendo_parro_2015
+  question: On the synthetic_example baseline, use caliendo_parro_2015 to find what happens to each country's
+    welfare if c1 and c2 put 20% tariffs on all of each other's goods.
+  given:
+  - 20
+  - 1.2
+  cases:
+  - q01_cp_war
+- id: q02
+  label: chowdhry_hinz_kamin_wanner_2022
+  question: Using the sanctions-coalition model chowdhry_hinz_kamin_wanner_2022 on the synthetic_example
+    baseline, how does each country's welfare change if c1 and c2 impose 20% tariffs on all of each other's
+    goods? Keep the baseline coalition.
+  given:
+  - 20
+  - 1.2
+  cases:
+  - q02_chkw_war
+- id: q03
+  label: mahlkow_wanner_2021
+  question: With mahlkow_wanner_2021 on the synthetic_example baseline, c1 and c3 form a climate club
+    with a carbon tax of 0.5, a border carbon tariff on imports from non-members and export rebates. How
+    do emissions and welfare change in each country?
+  given:
+  - 0.5
+  cases:
+  - q03_mw_club
+- id: q04
+  label: sector-specific tariff
+  question: On the synthetic_example baseline with caliendo_parro_2015, c1 raises its tariff on imports
+    of sector s1 goods from every partner to 25%, leaving sector s2 alone. How do c1's total imports and
+    c1's welfare change?
+  given:
+  - 25
+  - 1.25
+  cases:
+  - q04_cp_s1_tariff
+- id: q05
+  label: compare_runs
+  question: In mahlkow_wanner_2021 on the synthetic_example baseline, compare a 20% tariff war between
+    c1 and c2 alone with the same tariff war combined with a carbon tax of 0.5 in a climate club of c1
+    and c3 that levies a border carbon tariff and pays export rebates. By how much does each country's
+    welfare change differ between the two scenarios?
+  given:
+  - 20
+  - 1.2
+  - 0.5
+  cases:
+  - q05_mw_war
+  - q05_mw_war_club
+  comparisons:
+  - a: q05_mw_war
+    b: q05_mw_war_club
+    table: tables.welfare_change
+    column: value
+- id: q06
+  label: generate_baseline
+  question: Generate a synthetic baseline with 5 countries and 3 sectors using seed 7. Under caliendo_parro_2015,
+    c1 and c2 impose 20% tariffs on all of each other's goods. How do each country's exports change?
+  given:
+  - 5
+  - 3
+  - 7
+  - 20
+  - 1.2
+  cases:
+  - q06_gen_cp_war
+- id: q07
+  label: 'trap: no convergence'
+  question: On the synthetic_example baseline with caliendo_parro_2015 and trade_balance_rule fixed_country_share,
+    what is each country's welfare change if c1 and c2 impose 20% tariffs on all of each other's goods?
+  given:
+  - 20
+  - 1.2
+  cases:
+  - q07_cp_war_fcs
+  trap:
+    rule: kite_not_converged
+- id: q08
+  label: 'trap: variable the model does not read'
+  question: Using chowdhry_hinz_kamin_wanner_2022 on the synthetic_example baseline, what is the welfare
+    effect on each country of a 10% productivity increase in every sector of c3?
+  given:
+  - 10
+  - 1.1
+  cases:
+  - q08_cp_productivity
+  trap:
+    rule: kite_unread_variable
+    variable: productivity_change
+    also:
+    - productivity
+- id: q09
+  label: 'trap: real-world numbers'
+  question: Using KITE, what would a 25% United States tariff on all imports from China do to welfare
+    in Germany?
+  given:
+  - 25
+  - 1.25
+  cases: []
+  trap:
+    rule: kite_real_world
+- id: q10
+  label: non-tariff trade costs
+  question: On the synthetic_example baseline with caliendo_parro_2015, non-tariff trade costs on all
+    imports into c3 rise by 10% (ntb_new of 1.1). What happens to real wages in each country?
+  given:
+  - 10
+  - 1.1
+  cases:
+  - q10_cp_ntb

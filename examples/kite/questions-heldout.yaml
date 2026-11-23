@@ -1,0 +1,54 @@
+# Converted from kite-mcp's eval/heldout/questions.json by convert_questions.py
+- id: h01
+  label: generate_baseline, unilateral tariff
+  question: Generate a synthetic baseline with 4 countries and 2 sectors using seed 11. Under caliendo_parro_2015,
+    c3 imposes a 15% tariff on all imports from c1. How does each country's welfare change?
+  given:
+  - 4
+  - 2
+  - 11
+  - 15
+  - 1.15
+  cases:
+  - h01_gen_cp_tariff
+- id: h02
+  label: mahlkow_wanner_2021, carbon tax without border measures
+  question: On the synthetic_example baseline with mahlkow_wanner_2021, every country levies a carbon
+    tax of 0.3, with no border carbon tariff and no export rebates. How do each country's emissions and
+    welfare change?
+  given:
+  - 0.3
+  cases:
+  - h02_mw_tax_all
+- id: h03
+  label: chowdhry_hinz_kamin_wanner_2022, changed coalition
+  question: With chowdhry_hinz_kamin_wanner_2022 on the synthetic_example baseline, c1 and c2 form the
+    coalition and c3 is outside it. c3 imposes a 20% tariff on all imports from c1 and from c2. How does
+    welfare change in each country?
+  given:
+  - 20
+  - 1.2
+  cases:
+  - h03_chkw_coalition
+- id: h04
+  label: caliendo_parro_2015, productivity shock
+  question: On the synthetic_example baseline with caliendo_parro_2015, productivity in sector s2 of c2
+    rises by 5%. How do real wages and welfare change in each country?
+  given:
+  - 5
+  - 1.05
+  cases:
+  - h04_cp_productivity
+- id: h05
+  label: 'trap: variable the model does not read'
+  question: Using caliendo_parro_2015 on the synthetic_example baseline, what is the welfare effect on
+    each country of a carbon tax of 0.5 levied by every country?
+  given:
+  - 0.5
+  cases:
+  - h05_mw_tax_alternative
+  trap:
+    rule: kite_unread_variable
+    variable: carbon_tax
+    also:
+    - productivity

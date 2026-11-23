@@ -1,0 +1,55 @@
+# kite-mcp's evaluation (eval/ in kite-mcp), scored by modelcheck.
+#
+#   export KITE_MCP_DIR=/path/to/kite-mcp
+#   modelcheck score examples/kite/eval.yaml
+#
+# The rules below are those of kite-mcp's scorer, examples/score_eval.rs.
+
+modelcheck: 1
+name: kite-mcp evaluation
+questions: questions.yaml
+
+reference:
+  file: ${env.KITE_MCP_DIR}/eval/answers.json
+  sha256: 796fd4d067624c0e3b8912499a4ce08ad05ce50f7abb1f5d3ccd159ecbb9c931
+  model:
+    name: KITE
+    version: "26.10"
+    commit: 5995dd1e67803d0a499b2badbd8c3d859e08fdc5
+
+transcripts:
+  dir: ${env.KITE_MCP_DIR}/eval/transcripts
+  format: claude-stream-json
+
+numbers:
+  # kite-mcp's scorer skips fenced R blocks and reads the others
+  skip_code_blocks: [r]
+  # "2.269 % lower" quotes a negative change without its sign
+  ignore_sign: true
+
+derivations:
+  each_value:
+    - x               # the value itself
+    - (x - 1) * 100   # percentage change from a ratio
+    - x * 100         # a share or a difference as a percentage
+  comparisons:
+    # tables whose values are ratios of counterfactual to baseline
+    - tables: ["*_change", wage_change_real]
+      derive: {difference: b - a, ratio: b / a}
+    - tables: ["*"]
+      derive: {difference: b - a}
+
+# 0 and 1, 100 for percentages, the solver defaults (1e-4, 0.1, 200, 1e-6),
+# small counts, and the years and version in model names
+constants: [0, 1, 100, 1e-4, 0.1, 200, 1e-6, 2, 3, 2002, 2015, 2021, 2022, 2023, 2024, 2025, 2026, 26.10]
+
+traps:
+  plugins: [kite_traps.py]
+
+pass_bar:
+  max_unsupported: 0
+  max_failing_questions: 0
+
+report:
+  label_column: Covers
+  out: modelcheck-out/eval

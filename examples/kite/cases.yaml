@@ -1,0 +1,226 @@
+# The conformance cases of kite-mcp (tests/conformance.rs), as a modelcheck
+# case file. Each case runs a scenario through the server, compares the info
+# block, the warnings, the headline and every table KITE returns with a
+# direct KITE run, and checks the table names.
+#
+#   export KITE_MCP_DIR=/path/to/kite-mcp      # for worker/synthetic.R
+#   export KITE_MCP_BIN=$KITE_MCP_DIR/target/release/kite-mcp
+#   modelcheck conform examples/kite/cases.yaml
+#
+# Needs R with KITE at commit 5995dd1, data.table and jsonlite.
+
+modelcheck: 1
+name: KITE 26.10 through kite-mcp
+
+reference:
+  command: [Rscript, --vanilla, reference.R, "${out}", "${workdir}/csv_example"]
+  model:
+    name: KITE
+    version: "26.10"
+    commit: 5995dd1e67803d0a499b2badbd8c3d859e08fdc5
+
+server:
+  command: ["${env.KITE_MCP_BIN}", serve, "--baseline-dir=csv_example=${workdir}/csv_example"]
+
+# kite-mcp writes non-finite doubles as these strings (the default)
+numbers:
+  tokens: {NA: NA, NaN: NaN, Inf: Inf, -Inf: -Inf}
+
+x-scenarios:
+  tariff_war: &tariff_war
+    - {origin: c1, destination: c2, value: 1.2}
+    - {origin: c2, destination: c1, value: 1.2}
+  carbon_club: &carbon_club
+    carbon_tax: 0.5
+    countries_climate_club: [c1, c3]
+    scenario_carbon_tariff: true
+    scenario_export_rebate: true
+
+x-checks:
+  info: &info
+    - value: {output: info.convergence, reference: "${ref}.info.convergence"}
+    - value: {output: info.iterations, reference: "${ref}.info.iterations"}
+    - value: {output: info.criterion, reference: "${ref}.info.criterion"}
+    - value: {output: info.accounting.ok, reference: "${ref}.info.accounting.ok"}
+    - value: {output: info.accounting.rule, reference: "${ref}.info.accounting.rule"}
+    - value: {output: info.accounting.reason, reference: "${ref}.info.accounting.reason"}
+    - value: {output: info.accounting.world_trade_balance, reference: "${ref}.info.accounting.world_trade_balance"}
+    - value: {output: info.accounting.baseline_world_trade_balance, reference: "${ref}.info.accounting.baseline_world_trade_balance"}
+    - value: {output: info.accounting.world_value_added, reference: "${ref}.info.accounting.world_value_added"}
+    - value: {output: info.accounting.tolerance, reference: "${ref}.info.accounting.tolerance"}
+    - same_keys: {output: tables, reference: "${ref}.tables"}
+    - json: {output: warnings, reference: "${ref}.warnings", fields: [class, message]}
+
+  converged: &converged
+    - equals: {output: status, value: converged}
+    - absent: not_converged
+    # the headline is welfare_change, row for row
+    - table:
+        output: headline.by_country
+        reference: "${ref}.tables.welfare_change"
+        reference_columns: [country, value]
+        columns: {welfare_change: value}
+        ignore_columns: ["*_display", percent_change_derived]
+
+  not_converged: &not_converged
+    - equals: {output: status, value: not_converged}
+    - absent: headline
+    - contains: {output: not_converged, text: No result is reported}
+
+  # every table KITE returns, every row, every column
+  tables: &tables
+    each: {keys_of: "${ref}.tables", as: table}
+    call: get_table
+    arguments: {run_id: "${run.run_id}", table: "${table}", limit: 10000}
+    checks:
+      - table:
+          output: rows
+          reference: "${ref}.tables.${table}"
+          ignore_columns: ["*_display", "*_percent_display", unconverged]
+
+setup:
+  - call: generate_baseline
+    arguments: {countries: 5, sectors: 3, seed: 7}
+    checks:
+      - equals: {output: synthetic, value: true}
+  - call: describe_baseline
+    arguments: {baseline: csv_example}
+    checks:
+      - equals: {output: synthetic, value: false}
+
+cases:
+  - id: example_cp
+    vars: {ref: example_cp}
+    steps:
+      - call: run_scenario
+        arguments: {model: caliendo_parro_2015, scenario: {tariff_new: *tariff_war}}
+        save: run
+        checks: [*info, *converged]
+      - *tables
+
+  - id: example_chkw
+    vars: {ref: example_chkw}
+    steps:
+      - call: run_scenario
+        arguments: {model: chowdhry_hinz_kamin_wanner_2022, scenario: {tariff_new: *tariff_war}}
+        save: run
+        checks: [*info, *converged]
+      - *tables
+
+  - id: example_mw
+    vars: {ref: example_mw}
+    steps:
+      - call: run_scenario
+        arguments: {model: mahlkow_wanner_2021, scenario: *carbon_club}
+        save: run
+        checks: [*info, *converged]
+      - *tables
+
+  - id: gen5x3_cp
+    vars: {ref: gen5x3_cp}
+    steps:
+      - call: run_scenario
+        arguments: {model: caliendo_parro_2015, baseline: synthetic_c5_s3_seed7, scenario: {tariff_new: *tariff_war}}
+        save: run
+        checks: [*info, *converged]
+      - *tables
+
+  - id: gen5x3_chkw
+    vars: {ref: gen5x3_chkw}
+    steps:
+      - call: run_scenario
+        arguments: {model: chowdhry_hinz_kamin_wanner_2022, baseline: synthetic_c5_s3_seed7, scenario: {tariff_new: *tariff_war}}
+        save: run
+        checks: [*info, *converged]
+      - *tables
+
+  - id: gen5x3_mw
+    vars: {ref: gen5x3_mw}
+    steps:
+      - call: run_scenario
+        arguments: {model: mahlkow_wanner_2021, baseline: synthetic_c5_s3_seed7, scenario: *carbon_club}
+        save: run
+        checks: [*info, *converged]
+      - *tables
+
+  - id: sector_tariff_cp
+    vars: {ref: sector_tariff_cp}
+    steps:
+      - call: run_scenario
+        arguments:
+          model: caliendo_parro_2015
+          scenario: {tariff_new: [{destination: c1, sector: s1, value: 1.25}]}
+        save: run
+        checks: [*info, *converged]
+      - *tables
+
+  - id: nonconv_cp
+    vars: {ref: nonconv_cp}
+    steps:
+      - call: run_scenario
+        arguments:
+          model: caliendo_parro_2015
+          scenario: {tariff_new: *tariff_war}
+          settings: {trade_balance_rule: fixed_country_share}
+        save: run
+        checks: [*info, *not_converged]
+      - <<: *tables
+        checks:
+          - table:
+              output: rows
+              reference: "${ref}.tables.${table}"
+              ignore_columns: ["*_display", "*_percent_display", unconverged]
+          - equals: {output: status, value: not_converged}
+          - equals: {output: "rows[*].unconverged", value: true}
+
+  - id: unread_chkw
+    vars: {ref: unread_chkw}
+    steps:
+      - call: run_scenario
+        arguments:
+          model: chowdhry_hinz_kamin_wanner_2022
+          allow_unread_variables: true
+          scenario: {tariff_new: *tariff_war, carbon_tax: 0.5}
+        save: run
+        checks: [*info, *converged]
+      - *tables
+
+  - id: awkward_literal_mw
+    vars: {ref: awkward_literal_mw}
+    steps:
+      - call: run_scenario
+        arguments:
+          model: mahlkow_wanner_2021
+          scenario:
+            carbon_tax: 0.00648016
+            countries_climate_club: [c1, c3]
+            scenario_carbon_tariff: true
+            scenario_export_rebate: true
+        save: run
+        checks: [*info, *converged]
+      - *tables
+      - read: "kite://runs/${run.run_id}/reproduce.R"
+        checks:
+          - contains: {text: "carbon_tax <- 0x1.a8af0b45d9531p-8"}
+
+  # the example's baseline read from CSV files, against the example's reference
+  - id: csv_cp
+    vars: {ref: example_cp}
+    steps:
+      - call: run_scenario
+        arguments: {model: caliendo_parro_2015, baseline: csv_example, scenario: {tariff_new: *tariff_war}}
+        save: run
+        checks: [*info, *converged]
+      - *tables
+
+  # a variable the model does not read is refused unless allowed
+  - id: unread_refused
+    steps:
+      - call: run_scenario
+        arguments:
+          model: chowdhry_hinz_kamin_wanner_2022
+          scenario: {tariff_new: *tariff_war, carbon_tax: 0.5}
+        error: true
+        checks:
+          - equals: {output: error, value: validation_failed}
+          - equals: {output: "errors[0].field", value: scenario.carbon_tax}

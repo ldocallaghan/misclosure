@@ -1,0 +1,43 @@
+# kite-mcp's held-out questions (eval/heldout/ in kite-mcp), scored by modelcheck.
+# The rules are those of eval.yaml.
+
+modelcheck: 1
+name: kite-mcp held-out evaluation
+questions: questions-heldout.yaml
+
+reference:
+  file: ${env.KITE_MCP_DIR}/eval/heldout/answers.json
+  sha256: 652b55551f24ebc23a64bb4ac768f058a88522cadbc718d21e3a6565e0f1aec0
+  model:
+    name: KITE
+    version: "26.10"
+    commit: 5995dd1e67803d0a499b2badbd8c3d859e08fdc5
+
+transcripts:
+  dir: ${env.KITE_MCP_DIR}/eval/heldout/transcripts
+  format: claude-stream-json
+
+numbers:
+  skip_code_blocks: [r]
+  ignore_sign: true
+
+derivations:
+  each_value: [x, (x - 1) * 100, x * 100]
+  comparisons:
+    - tables: ["*_change", wage_change_real]
+      derive: {difference: b - a, ratio: b / a}
+    - tables: ["*"]
+      derive: {difference: b - a}
+
+constants: [0, 1, 100, 1e-4, 0.1, 200, 1e-6, 2, 3, 2002, 2015, 2021, 2022, 2023, 2024, 2025, 2026, 26.10]
+
+traps:
+  plugins: [kite_traps.py]
+
+pass_bar:
+  max_unsupported: 0
+  max_failing_questions: 0
+
+report:
+  label_column: Covers
+  out: modelcheck-out/heldout
