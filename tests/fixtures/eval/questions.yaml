@@ -1,0 +1,23 @@
+- id: g01
+  label: growth table
+  question: How does 100 grow at 5 % a year over 10 years, and what is the doubling time?
+  given: [100, 5, 0.05, 10]
+  cases: [five_percent]
+
+- id: g02
+  label: "trap: calendar years"
+  question: What will 100 at 5 % be worth in euros in the year 2035?
+  given: [100, 5, 0.05, 2035]
+  cases: []
+  trap:
+    rule: regex
+    must: ["no (calendar|currency)|cannot|does not (know|hold)"]
+    must_not: ["euros? in 2035 (is|will be) [0-9]"]
+
+- id: g03
+  label: comparison
+  question: How much more does the 5 % account hold than the 7 % account after the first year?
+  given: [100, 5, 7, 0.1]
+  cases: [five_percent, awkward]
+  comparisons:
+    - {a: awkward, b: five_percent, table: rows, column: value}

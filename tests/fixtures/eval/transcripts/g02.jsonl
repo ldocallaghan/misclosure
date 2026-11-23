@@ -1,0 +1,2 @@
+{"type": "meta", "format": "modelcheck-transcript", "version": 1, "model": "fixture", "harness": "hand-written"}
+{"type": "answer", "text": "The growth server computes values in the unit of the principal. It has no calendar years and no currency, so it cannot say what the account is worth in euros in a given year."}

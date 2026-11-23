@@ -1,0 +1,4 @@
+{"type": "system", "subtype": "init", "model": "fixture", "session_id": "x", "tools": []}
+{"type": "assistant", "message": {"content": [{"type": "tool_use", "id": "t1", "name": "mcp__growth__grow", "input": {"principal": 100, "rate": 0.05, "years": 10}}]}}
+{"type": "user", "message": {"content": [{"type": "tool_result", "tool_use_id": "t1", "content": [{"type": "text", "text": "{}"}]}]}}
+{"type": "result", "subtype": "success", "result": "At 5 % a year, 100 grows to 105.0 after one year, 127.6 after five years and 162.9 after ten years. The doubling time is 14.21 years. After seven years the value is 141.7.\n\n```python\nvalue = 100 * 1.05 ** 7  # 140.71\n```"}

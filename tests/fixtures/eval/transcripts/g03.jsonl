@@ -1,0 +1,6 @@
+{"type": "meta", "format": "modelcheck-transcript", "version": 1, "model": "fixture", "harness": "hand-written"}
+{"type": "tool_call", "id": "c0", "name": "grow", "arguments": {"principal": 100, "rate": 0.05, "years": 1}}
+{"type": "tool_result", "id": "c0", "is_error": false, "text": "{}", "structured": null}
+{"type": "tool_call", "id": "c1", "name": "grow", "arguments": {"principal": 0.1, "rate": 0.07, "years": 1}}
+{"type": "tool_result", "id": "c1", "is_error": false, "text": "{}", "structured": null}
+{"type": "answer", "text": "After the first year the 5 % account holds 105.0 and the 7 % account 0.107, a difference of 104.9."}

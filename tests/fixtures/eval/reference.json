@@ -1,0 +1,136 @@
+{
+ "modelcheck_reference": 1,
+ "model": {
+  "name": "growth",
+  "version": "1",
+  "python": "3.11.15"
+ },
+ "values": {
+  "five_percent": {
+   "rows": {
+    "columns": [
+     {
+      "name": "year",
+      "type": "integer",
+      "values": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10
+      ]
+     },
+     {
+      "name": "value",
+      "type": "double",
+      "values": [
+       "4059000000000000",
+       "405a400000000000",
+       "405b900000000000",
+       "405cf0ccccccccce",
+       "405e633d70a3d70c",
+       "405fe833b645a1cd",
+       "4060c04e594af4f2",
+       "406196b8aa8eb465",
+       "406277db7fe2a3d0",
+       "4063644013145f35",
+       "40645c767a6efd91"
+      ]
+     }
+    ]
+   },
+   "doubling_time": {
+    "double": "402c69d47652416b"
+   }
+  },
+  "awkward": {
+   "rows": {
+    "columns": [
+     {
+      "name": "year",
+      "type": "integer",
+      "values": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12,
+       13,
+       14,
+       15,
+       16,
+       17,
+       18,
+       19,
+       20,
+       21,
+       22,
+       23,
+       24,
+       25,
+       26,
+       27,
+       28,
+       29,
+       30
+      ]
+     },
+     {
+      "name": "value",
+      "type": "double",
+      "values": [
+       "3fb999999999999a",
+       "3fbb645a1cac0832",
+       "3fbd4f3775b81302",
+       "3fbf5c711a1e8f38",
+       "3fc0c73763bbde8b",
+       "3fc1f3e1aab719a5",
+       "3fc33597dd10b79a",
+       "3fc48dd3224cc474",
+       "3fc5fe27088a760c",
+       "3fc788435d9e64b7",
+       "3fc92df6294ac2ce",
+       "3fcaf12dcae708c4",
+       "3fccd3fb3cf2162d",
+       "3fced89481363b92",
+       "3fd080ab9c2b1831",
+       "3fd1a865b3e66e5e",
+       "3fd2e4d338d0294b",
+       "3fd4376720a14ae8",
+       "3fd5a1ae58ac9545",
+       "3fd7255197338b3e",
+       "3fd8c4174d4e3126",
+       "3fda7fe5bbad43f4",
+       "3fdc5ac52ca7795a",
+       "3fde56e2562e13c4",
+       "3fe03b487339ee6b",
+       "3fe15e271f21d396",
+       "3fe295622e1c83ae",
+       "3fe3e2667e23a160",
+       "3fe546ba779be270",
+       "3fe6c3ffd7058435",
+       "3fe85bf596b68ae7"
+      ]
+     }
+    ]
+   },
+   "doubling_time": {
+    "double": "40247d5246fdc93d"
+   }
+  }
+ }
+}

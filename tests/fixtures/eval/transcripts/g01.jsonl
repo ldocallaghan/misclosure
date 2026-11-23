@@ -1,0 +1,4 @@
+{"type": "meta", "format": "modelcheck-transcript", "version": 1, "model": "fixture", "harness": "hand-written"}
+{"type": "tool_call", "id": "c0", "name": "grow", "arguments": {"principal": 100, "rate": 0.05, "years": 10}}
+{"type": "tool_result", "id": "c0", "is_error": false, "text": "{}", "structured": null}
+{"type": "answer", "text": "At 5 % a year, 100 grows to 105.0 after one year, 127.6 after five years and 162.9 after ten years. The doubling time is 14.21 years. After seven years the value is 141.7.\n\n```python\nvalue = 100 * 1.05 ** 7  # 140.71\n```"}

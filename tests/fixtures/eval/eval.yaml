@@ -1,0 +1,27 @@
+modelcheck: 1
+name: growth server evaluation
+questions: questions.yaml
+
+reference:
+  file: reference.json
+  sha256: cbb42a10b4086bc7efabb8287bb31faccd1d4cd0a976b381268b25921b9c82ba
+
+transcripts:
+  dir: transcripts
+  format: modelcheck
+
+numbers:
+  skip_code_blocks: all
+  ignore_sign: true
+
+derivations:
+  each_value: [x, (x - 1) * 100]
+  comparisons:
+    - tables: ["*"]
+      derive: {difference: b - a, ratio: b / a}
+
+constants: [0, 1, 100]
+
+pass_bar:
+  max_unsupported: 0
+  max_failing_questions: 0
