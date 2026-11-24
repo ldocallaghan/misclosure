@@ -267,10 +267,10 @@ def compare_table(
     `columns` maps output column names to reference column names; by default
     each reference column is read from the output column of the same name.
     `keys` are reference column names; by default every column that is not
-    of type double. Output columns that are neither mapped nor matched by a
-    pattern in `ignore` are failures. `reference_columns` limits the
-    comparison to those reference columns, for output that holds part of a
-    table.
+    of type double. An empty list matches rows by position. Output columns
+    that are neither mapped nor matched by a pattern in `ignore` are
+    failures. `reference_columns` limits the comparison to those reference
+    columns, for output that holds part of a table.
     """
     if not is_table_node(ref_node):
         raise ValueError(f"{where}: the reference is not a table")
@@ -293,7 +293,10 @@ def compare_table(
             )
         for out_name, ref_name in columns.items():
             out_for_ref[ref_name] = out_name
-    key_names = list(keys) if keys else [c["name"] for c in ref_cols if c["type"] != "double"]
+    if keys is not None:
+        key_names = list(keys)
+    else:
+        key_names = [c["name"] for c in ref_cols if c["type"] != "double"]
     for k in key_names:
         if k not in ref_types:
             raise ValueError(f"{where}: key column {k!r} is not in the reference table")

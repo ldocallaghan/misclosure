@@ -114,6 +114,26 @@ def test_table_failures():
     assert "duplicate" in {x.kind for x in f}
 
 
+def test_empty_keys_match_rows_by_position():
+    # rows without a name column, as a server writes when it drops a table's index
+    out = rows(
+        '[{"country":"c1","value":1.05},{"country":"c2","value":0.98},{"country":"c3","value":1.0}]'
+    )
+    t = Tally()
+    assert compare_table(out, ref_table(), "t", N, [], None, [], {}, t) == []
+    assert t.table_cells == 6
+    swapped = rows(
+        '[{"country":"c2","value":0.98},{"country":"c1","value":1.05},{"country":"c3","value":1.0}]'
+    )
+    f = compare_table(swapped, ref_table(), "t", N, [], None, [], {}, Tally())
+    assert [x.where for x in f] == [
+        "t[row 0].country",
+        "t[row 0].value",
+        "t[row 1].country",
+        "t[row 1].value",
+    ]
+
+
 def test_table_column_mapping_and_subset():
     ref = encode_table({"country": ["c1"], "value": [1.05], "weight": [0.3]})
     out = rows('[{"country":"c1","welfare":1.05}]')

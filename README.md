@@ -100,7 +100,7 @@ The checks:
 | `json: {output, reference, fields}` | plain JSON equals the reference, limited to `fields` in each object |
 | `contains: {output, text}` | a string holds the text |
 
-A table check matches rows by key columns, in any order. By default the keys are the reference columns that are not doubles. `columns` maps output column names to reference column names; `reference_columns` limits the check to some reference columns. Missing or extra rows, missing columns and output columns that are not in the reference fail, unless `ignore_columns` lists them; patterns such as `*_display` are allowed.
+A table check matches rows by key columns, in any order. By default the keys are the reference columns that are not doubles. `keys: []` matches rows by position, for output whose rows carry no names. `columns` maps output column names to reference column names; `reference_columns` limits the check to some reference columns. Missing or extra rows, missing columns and output columns that are not in the reference fail, unless `ignore_columns` lists them; patterns such as `*_display` are allowed.
 
 ### Comparison
 
