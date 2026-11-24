@@ -1,8 +1,8 @@
-"""Transcripts: the modelcheck format, and an adapter for Claude Code.
+"""Transcripts: the misclosure format, and an adapter for Claude Code.
 
-A modelcheck transcript is a JSON Lines file. Each line is one record:
+A misclosure transcript is a JSON Lines file. Each line is one record:
 
-    {"type": "meta", "format": "modelcheck-transcript", "version": 1,
+    {"type": "meta", "format": "misclosure-transcript", "version": 1,
      "model": "...", "harness": "..."}
     {"type": "tool_call", "id": "...", "name": "run_scenario", "arguments": {...}}
     {"type": "tool_result", "id": "...", "is_error": false, "text": "...",
@@ -25,7 +25,7 @@ from pathlib import Path
 from typing import Any
 
 BYTE_ORDER_MARK = chr(0xFEFF)
-FORMAT = "modelcheck-transcript"
+FORMAT = "misclosure-transcript"
 VERSION = 1
 
 
@@ -113,7 +113,7 @@ def from_claude_stream_json(lines: Iterable[str], strip_prefix: str = "mcp__") -
     return t
 
 
-def read_modelcheck(lines: Iterable[str]) -> Transcript:
+def read_misclosure(lines: Iterable[str]) -> Transcript:
     t = Transcript()
     for n, line in enumerate(lines, 1):
         line = line.strip()
@@ -137,10 +137,10 @@ def lines_of(t: Transcript) -> Iterator[str]:
         yield json.dumps(r, ensure_ascii=False)
 
 
-def read(path: Path, format: str = "modelcheck", strip_prefix: str = "mcp__") -> Transcript:
+def read(path: Path, format: str = "misclosure", strip_prefix: str = "mcp__") -> Transcript:
     with path.open(encoding="utf-8") as f:
-        if format == "modelcheck":
-            return read_modelcheck(f)
+        if format == "misclosure":
+            return read_misclosure(f)
         if format == "claude-stream-json":
             return from_claude_stream_json(f, strip_prefix)
     raise ValueError(f"unknown transcript format {format!r}")

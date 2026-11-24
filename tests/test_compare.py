@@ -2,7 +2,7 @@ import math
 
 import pytest
 
-from modelcheck.conform.compare import (
+from misclosure.conform.compare import (
     Numbers,
     Tally,
     Tolerance,
@@ -10,8 +10,8 @@ from modelcheck.conform.compare import (
     compare_scalar,
     compare_table,
 )
-from modelcheck.encoding import R_NA_HEX, encode_table, float_to_hex
-from modelcheck.jsonlit import Num, loads
+from misclosure.encoding import R_NA_HEX, encode_table, float_to_hex
+from misclosure.jsonlit import Num, loads
 
 N = Numbers()
 

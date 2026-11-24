@@ -1,4 +1,4 @@
-"""Write kite-mcp's question files in the modelcheck question format.
+"""Write kite-mcp's question files in the misclosure question format.
 
     python convert_questions.py $KITE_MCP_DIR/eval/questions.json questions.yaml
     python convert_questions.py $KITE_MCP_DIR/eval/heldout/questions.json questions-heldout.yaml

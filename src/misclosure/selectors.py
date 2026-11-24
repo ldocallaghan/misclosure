@@ -16,7 +16,7 @@ import re
 from collections.abc import Mapping
 from typing import Any
 
-from modelcheck.jsonlit import Num, plain
+from misclosure.jsonlit import Num, plain
 
 
 class SelectorError(KeyError):

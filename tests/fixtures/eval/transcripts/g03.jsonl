@@ -1,4 +1,4 @@
-{"type": "meta", "format": "modelcheck-transcript", "version": 1, "model": "fixture", "harness": "hand-written"}
+{"type": "meta", "format": "misclosure-transcript", "version": 1, "model": "fixture", "harness": "hand-written"}
 {"type": "tool_call", "id": "c0", "name": "grow", "arguments": {"principal": 100, "rate": 0.05, "years": 1}}
 {"type": "tool_result", "id": "c0", "is_error": false, "text": "{}", "structured": null}
 {"type": "tool_call", "id": "c1", "name": "grow", "arguments": {"principal": 0.1, "rate": 0.07, "years": 1}}

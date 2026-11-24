@@ -1,4 +1,4 @@
-"""`modelcheck score`: check every number in each answer against reference values.
+"""`misclosure score`: check every number in each answer against reference values.
 
 The scorer checks where the numbers in an answer came from. It does not
 check whether the prose around them is right.
@@ -12,14 +12,14 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from modelcheck.conform.runner import read_structured_file
-from modelcheck.reference import Reference
-from modelcheck.reference import load as load_reference
-from modelcheck.score import transcript as tx
-from modelcheck.score import traps
-from modelcheck.score.numbers import Shown, numbers
-from modelcheck.score.support import Derivations, Support, comparison_values, numeric_values
-from modelcheck.selectors import parse, select, substitute
+from misclosure.conform.runner import read_structured_file
+from misclosure.reference import Reference
+from misclosure.reference import load as load_reference
+from misclosure.score import transcript as tx
+from misclosure.score import traps
+from misclosure.score.numbers import Shown, numbers
+from misclosure.score.support import Derivations, Support, comparison_values, numeric_values
+from misclosure.selectors import parse, select, substitute
 
 EVAL_FORMAT = 1
 
@@ -61,8 +61,8 @@ class EvalFile:
     def load(cls, path: Path) -> EvalFile:
         p = path.resolve()
         data = read_structured_file(p)
-        if not isinstance(data, dict) or data.get("modelcheck") != EVAL_FORMAT:
-            raise EvalFileError(f"{p}: set `modelcheck: {EVAL_FORMAT}` at the top")
+        if not isinstance(data, dict) or data.get("misclosure") != EVAL_FORMAT:
+            raise EvalFileError(f"{p}: set `misclosure: {EVAL_FORMAT}` at the top")
         for key in ("questions", "reference", "transcripts"):
             if key not in data:
                 raise EvalFileError(f"{p}: no `{key}`")
@@ -127,7 +127,7 @@ def score(
     questions = _questions(ef, ctx)
     tspec = d["transcripts"]
     tdir = transcripts or (ef.base / substitute(tspec["dir"], ctx))
-    tformat = tspec.get("format", "modelcheck")
+    tformat = tspec.get("format", "misclosure")
     strip = tspec.get("strip_prefix", "mcp__")
     nspec = d.get("numbers") or {}
     skip = nspec.get("skip_code_blocks", "all")
@@ -244,7 +244,7 @@ def to_json(r: ScoreResult) -> dict[str, Any]:
 def run_score(path: Path, out: Path | None = None, transcripts: Path | None = None) -> int:
     ef = EvalFile.load(path)
     r = score(ef, transcripts)
-    out_dir = out or ef.base / (ef.data.get("report") or {}).get("out", "modelcheck-out")
+    out_dir = out or ef.base / (ef.data.get("report") or {}).get("out", "misclosure-out")
     out_dir.mkdir(parents=True, exist_ok=True)
     md = to_markdown(r, ef)
     (out_dir / "results.md").write_text(md, encoding="utf-8")

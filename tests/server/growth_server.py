@@ -1,4 +1,4 @@
-"""A small MCP server for modelcheck's own tests and quick start.
+"""A small MCP server for misclosure's own tests and quick start.
 
 It wraps one numerical function, compound growth: the value of a principal
 after each year at a fixed rate, and the doubling time. Three tools return it:

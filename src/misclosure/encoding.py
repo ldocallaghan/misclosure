@@ -145,7 +145,7 @@ def encode_scalar(x: Any) -> dict[str, Any] | None:
 
 def reference_document(values: Mapping[str, Any], model: Mapping[str, Any]) -> dict[str, Any]:
     """A reference file: the format number, the model it came from, and the values."""
-    return {"modelcheck_reference": REFERENCE_FORMAT, "model": dict(model), "values": dict(values)}
+    return {"misclosure_reference": REFERENCE_FORMAT, "model": dict(model), "values": dict(values)}
 
 
 def write_reference(path: str | Path, values: Mapping[str, Any], model: Mapping[str, Any]) -> str:

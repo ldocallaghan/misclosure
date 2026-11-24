@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 from xml.sax.saxutils import escape, quoteattr
 
-from modelcheck.conform.runner import RunResult
+from misclosure.conform.runner import RunResult
 
 KIND_TEXT = {
     "value": "a different value",
@@ -144,7 +144,7 @@ def to_junit(r: RunResult) -> str:
     failed = sum(not c.passed for c in r.cases)
     out = [
         '<?xml version="1.0" encoding="UTF-8"?>',
-        f"<testsuite name={quoteattr('modelcheck conform ' + name)} "
+        f"<testsuite name={quoteattr('misclosure conform ' + name)} "
         f'tests="{len(r.cases)}" failures="{failed}" errors="0">',
     ]
     for c in r.cases:

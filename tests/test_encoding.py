@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from modelcheck.encoding import (
+from misclosure.encoding import (
     R_NA,
     R_NA_HEX,
     decode_double,
@@ -125,10 +125,10 @@ def test_r_encoder_matches_python(tmp_path):
 
 
 def test_julia_encoder_matches_python(tmp_path):
-    # MODELCHECK_JULIA may name another command, such as a container run
-    command = os.environ.get("MODELCHECK_JULIA") or shutil.which("julia")
+    # MISCLOSURE_JULIA may name another command, such as a container run
+    command = os.environ.get("MISCLOSURE_JULIA") or shutil.which("julia")
     if not command:
-        pytest.skip("julia not found; set MODELCHECK_JULIA to run this test")
+        pytest.skip("julia not found; set MISCLOSURE_JULIA to run this test")
     out = tmp_path / "julia.json"
     script = ROOT / "encoders/julia/test_encode.jl"
     subprocess.run([*shlex.split(command), str(script), str(out)], check=True)

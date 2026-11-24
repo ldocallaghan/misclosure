@@ -23,13 +23,13 @@ jobs:
       - run: uv run ruff check .
       - run: uv run ruff format --check .
       - name: Unit tests, the growth server over stdio and HTTP, and the encoders
-        run: MODELCHECK_JULIA=julia uv run pytest -v
+        run: MISCLOSURE_JULIA=julia uv run pytest -v
 
   kite:
     # The proof against kite-mcp needs R, KITE at its pinned commit and a
-    # kite-mcp build. It runs when the repository variable MODELCHECK_KITE is 1.
+    # kite-mcp build. It runs when the repository variable MISCLOSURE_KITE is 1.
     name: Proof against kite-mcp
-    if: vars.MODELCHECK_KITE == '1'
+    if: vars.MISCLOSURE_KITE == '1'
     runs-on: ubuntu-24.04
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -54,5 +54,5 @@ jobs:
         run: |
           export KITE_MCP_DIR="$GITHUB_WORKSPACE/kite-mcp"
           export KITE_MCP_BIN="$KITE_MCP_DIR/target/release/kite-mcp"
-          MODELCHECK_KITE=1 uv run pytest -v tests/test_kite.py
-          uv run modelcheck conform examples/kite/cases.yaml --junit conformance-junit.xml
+          MISCLOSURE_KITE=1 uv run pytest -v tests/test_kite.py
+          uv run misclosure conform examples/kite/cases.yaml --junit conformance-junit.xml

@@ -2,8 +2,8 @@
 # The optional argument writes the encoded test table, for the cross-language
 # test in tests/.
 
-include(joinpath(@__DIR__, "ModelcheckEncode.jl"))
-using .ModelcheckEncode
+include(joinpath(@__DIR__, "MisclosureEncode.jl"))
+using .MisclosureEncode
 using Test
 
 const AWKWARD = [
@@ -24,28 +24,28 @@ const AWKWARD = [
 ]
 
 @testset "Julia encoder" begin
-    x = mc_unhex.(AWKWARD)
-    @test mc_hex.(x) == AWKWARD
-    @test mc_hex(-0.0) == "8000000000000000"
-    @test mc_hex(floatmax(Float64)) == "7fefffffffffffff"
-    @test mc_hex(nextfloat(0.0)) == "0000000000000001"
+    x = mcl_unhex.(AWKWARD)
+    @test mcl_hex.(x) == AWKWARD
+    @test mcl_hex(-0.0) == "8000000000000000"
+    @test mcl_hex(floatmax(Float64)) == "7fefffffffffffff"
+    @test mcl_hex(nextfloat(0.0)) == "0000000000000001"
     @test isnan(x[10]) && isnan(x[12])
-    t = mc_table(["country" => ["c1", "c2", missing], "n" => [1, missing, 3],
+    t = mcl_table(["country" => ["c1", "c2", missing], "n" => [1, missing, 3],
                   "ok" => [true, missing, false], "value" => [0.1, missing, -0.0]])
     cols = last(t[1])
     @test [last(c[2]) for c in cols] == ["string", "integer", "logical", "double"]
     @test last(cols[4][3]) == Any["3fb999999999999a", "7ff00000000007a2", "8000000000000000"]
     @test last(cols[1][3])[3] === nothing
-    @test mc_json(mc_scalar(22)) == "{\"integer\":22}"
-    @test mc_json(mc_scalar(0.1)) == "{\"double\":\"3fb999999999999a\"}"
-    @test mc_json(mc_scalar("a\"b")) == "{\"string\":\"a\\\"b\"}"
-    @test mc_scalar(missing) === nothing
+    @test mcl_json(mcl_scalar(22)) == "{\"integer\":22}"
+    @test mcl_json(mcl_scalar(0.1)) == "{\"double\":\"3fb999999999999a\"}"
+    @test mcl_json(mcl_scalar("a\"b")) == "{\"string\":\"a\\\"b\"}"
+    @test mcl_scalar(missing) === nothing
 end
 
 if length(ARGS) >= 1
-    mc_write_reference(ARGS[1],
-        ["awkward" => mc_table(["bits" => AWKWARD, "value" => mc_unhex.(AWKWARD)]),
-         "mixed" => mc_table(["country" => ["c1", "c2", missing], "n" => [1, missing, 3],
+    mcl_write_reference(ARGS[1],
+        ["awkward" => mcl_table(["bits" => AWKWARD, "value" => mcl_unhex.(AWKWARD)]),
+         "mixed" => mcl_table(["country" => ["c1", "c2", missing], "n" => [1, missing, 3],
                               "ok" => [true, missing, false], "value" => [0.1, missing, -0.0]])],
         ["name" => "encoder test", "version" => "1"])
 end

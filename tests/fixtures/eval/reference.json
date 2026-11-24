@@ -1,5 +1,5 @@
 {
- "modelcheck_reference": 1,
+ "misclosure_reference": 1,
  "model": {
   "name": "growth",
   "version": "1",

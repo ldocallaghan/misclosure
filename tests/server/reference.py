@@ -13,7 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from growth_server import growth
 
-from modelcheck.encoding import encode_scalar, encode_table, write_reference
+from misclosure.encoding import encode_scalar, encode_table, write_reference
 
 RUNS = {
     "five_percent": (100.0, 0.05, 10),

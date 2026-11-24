@@ -1,4 +1,4 @@
-"""The proof against kite-mcp. Runs only when MODELCHECK_KITE=1.
+"""The proof against kite-mcp. Runs only when MISCLOSURE_KITE=1.
 
 Needs KITE_MCP_DIR (a kite-mcp checkout with its evaluation files),
 KITE_MCP_BIN (a built kite-mcp binary), and R with KITE at commit 5995dd1.
@@ -13,16 +13,16 @@ from pathlib import Path
 import anyio
 import pytest
 
-from modelcheck.conform import report
-from modelcheck.conform.runner import CaseFile, Runner
-from modelcheck.score.scorer import EvalFile, score, to_markdown
+from misclosure.conform import report
+from misclosure.conform.runner import CaseFile, Runner
+from misclosure.score.scorer import EvalFile, score, to_markdown
 
 ROOT = Path(__file__).resolve().parent.parent
 KITE = ROOT / "examples" / "kite"
 
 pytestmark = pytest.mark.skipif(
-    os.environ.get("MODELCHECK_KITE") != "1",
-    reason="set MODELCHECK_KITE=1, KITE_MCP_DIR and KITE_MCP_BIN to run",
+    os.environ.get("MISCLOSURE_KITE") != "1",
+    reason="set MISCLOSURE_KITE=1, KITE_MCP_DIR and KITE_MCP_BIN to run",
 )
 
 sys.path.insert(0, str(KITE))
@@ -37,7 +37,7 @@ def test_conformance_reproduces_the_kite_mcp_count(tmp_path):
     assert t.cells_by_call["get_table"] == 17394
     assert r.client_checked > 0
 
-    # modelcheck's R encoder writes the same bits as kite-mcp's own reference script
+    # misclosure's R encoder writes the same bits as kite-mcp's own reference script
     theirs = tmp_path / "kite_mcp_reference.json"
     kite = Path(os.environ["KITE_MCP_DIR"])
     subprocess.run(

@@ -1,11 +1,11 @@
 """Trap rules: checks for questions whose right answer is a refusal or a warning.
 
 A rule is a function that takes a `TrapContext` and returns (passed, note).
-Rules are registered by name with `@trap_rule("name")`, in modelcheck or in
+Rules are registered by name with `@trap_rule("name")`, in misclosure or in
 a plugin file the evaluation file lists under `traps.plugins`. A question
 names its rule with `trap: {rule: name, ...params}`.
 
-    from modelcheck.score.traps import TrapContext, trap_rule
+    from misclosure.score.traps import TrapContext, trap_rule
 
     @trap_rule("says_synthetic")
     def says_synthetic(ctx: TrapContext) -> tuple[bool, str]:
@@ -22,8 +22,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from modelcheck.score.numbers import Shown
-from modelcheck.score.support import table_rows
+from misclosure.score.numbers import Shown
+from misclosure.score.support import table_rows
 
 TrapRule = Callable[["TrapContext"], tuple[bool, str]]
 RULES: dict[str, TrapRule] = {}
@@ -66,7 +66,7 @@ class TrapContext:
 
 def load_plugins(paths: list[Path]) -> None:
     for p in paths:
-        spec = importlib.util.spec_from_file_location(f"modelcheck_plugin_{p.stem}", p)
+        spec = importlib.util.spec_from_file_location(f"misclosure_plugin_{p.stem}", p)
         if spec is None or spec.loader is None:
             raise ValueError(f"cannot load trap plugin {p}")
         module = importlib.util.module_from_spec(spec)

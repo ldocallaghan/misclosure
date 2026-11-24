@@ -27,8 +27,8 @@ from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any
 
-from modelcheck.encoding import decode_double, is_scalar_node, is_table_node
-from modelcheck.score.numbers import Shown
+from misclosure.encoding import decode_double, is_scalar_node, is_table_node
+from misclosure.score.numbers import Shown
 
 _OPS: dict[type, Callable[..., float]] = {
     ast.Add: operator.add,

@@ -3,11 +3,11 @@ from pathlib import Path
 
 import pytest
 
-from modelcheck.encoding import encode_table
-from modelcheck.score import transcript as tx
-from modelcheck.score.numbers import numbers, remove_code
-from modelcheck.score.scorer import EvalFile, score
-from modelcheck.score.support import Derivations, Expression, Support, comparison_values
+from misclosure.encoding import encode_table
+from misclosure.score import transcript as tx
+from misclosure.score.numbers import numbers, remove_code
+from misclosure.score.scorer import EvalFile, score
+from misclosure.score.support import Derivations, Expression, Support, comparison_values
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "eval"
 
@@ -92,7 +92,7 @@ def test_claude_stream_json_adapter():
         tx.convert(FIXTURES / "claude" / "g01.jsonl", out, "claude-stream-json")
         back = tx.read(out)
         assert back.answer == mine.answer and back.tools_called() == ["grow"]
-        assert json.loads(out.read_text().split("\n")[0])["format"] == "modelcheck-transcript"
+        assert json.loads(out.read_text().split("\n")[0])["format"] == "misclosure-transcript"
     finally:
         out.unlink(missing_ok=True)
 

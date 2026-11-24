@@ -2,11 +2,11 @@
 
 A reference file is JSON. In its full form it carries the model it came from:
 
-    {"modelcheck_reference": 1,
+    {"misclosure_reference": 1,
      "model": {"name": "KITE", "version": "26.10", "commit": "5995dd1..."},
      "values": {...}}
 
-A file without the `modelcheck_reference` key is read as the values alone,
+A file without the `misclosure_reference` key is read as the values alone,
 and the model is then taken from the declaration in the case or evaluation
 file. Either way the declaration may give the file's SHA-256, which is
 checked before the values are used.
@@ -23,8 +23,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from modelcheck.encoding import REFERENCE_FORMAT
-from modelcheck.selectors import substitute
+from misclosure.encoding import REFERENCE_FORMAT
+from misclosure.selectors import substitute
 
 
 class ReferenceError(Exception):
@@ -56,10 +56,10 @@ def _read(path: Path, declared: Mapping[str, Any]) -> tuple[dict[str, Any], dict
     if expected and expected.lower() != digest:
         raise ReferenceError(f"{path}: SHA-256 is {digest}, the declaration gives {expected}")
     doc = json.loads(data)
-    if isinstance(doc, dict) and "modelcheck_reference" in doc:
-        if doc["modelcheck_reference"] != REFERENCE_FORMAT:
+    if isinstance(doc, dict) and "misclosure_reference" in doc:
+        if doc["misclosure_reference"] != REFERENCE_FORMAT:
             raise ReferenceError(
-                f"{path}: reference format {doc['modelcheck_reference']}; "
+                f"{path}: reference format {doc['misclosure_reference']}; "
                 f"this version reads {REFERENCE_FORMAT}"
             )
         values, model = doc.get("values", {}), dict(doc.get("model") or {})

@@ -7,10 +7,10 @@ import mcp_types as types
 import pytest
 from pydantic import TypeAdapter
 
-from modelcheck import jsonlit
-from modelcheck.encoding import float_to_hex
-from modelcheck.jsonlit import Num
-from modelcheck.selectors import SelectorError, parse, select, select_all, substitute
+from misclosure import jsonlit
+from misclosure.encoding import float_to_hex
+from misclosure.jsonlit import Num
+from misclosure.selectors import SelectorError, parse, select, select_all, substitute
 
 
 def test_literals_keep_their_text():
@@ -67,7 +67,7 @@ def test_templates():
     assert substitute("${run.run_id}", ctx) == "r1"
     assert substitute("${run.n}", ctx) == 22
     assert substitute({"x": ["id ${run.run_id}/${table}"]}, ctx) == {"x": ["id r1/welfare"]}
-    os.environ["MODELCHECK_TEST_VAR"] = "v"
-    assert substitute("${env.MODELCHECK_TEST_VAR}", ctx) == "v"
+    os.environ["MISCLOSURE_TEST_VAR"] = "v"
+    assert substitute("${env.MISCLOSURE_TEST_VAR}", ctx) == "v"
     with pytest.raises(SelectorError):
         substitute("${nothing}", ctx)

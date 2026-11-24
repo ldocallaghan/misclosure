@@ -1,6 +1,6 @@
 # The growth server's faulty tools, for tests/test_growth_server.py.
 
-modelcheck: 1
+misclosure: 1
 name: growth server faults
 
 reference:

@@ -13,9 +13,9 @@ from typing import Any, TextIO
 
 import yaml
 
-from modelcheck import jsonlit
-from modelcheck.client import Connection, ServerSpec
-from modelcheck.conform.compare import (
+from misclosure import jsonlit
+from misclosure.client import Connection, ServerSpec
+from misclosure.conform.compare import (
     DEFAULT_TOKENS,
     Failure,
     Numbers,
@@ -24,10 +24,10 @@ from modelcheck.conform.compare import (
     compare_scalar,
     compare_table,
 )
-from modelcheck.encoding import float_to_hex, is_scalar_node
-from modelcheck.reference import Reference
-from modelcheck.reference import load as load_reference
-from modelcheck.selectors import SelectorError, select, select_all, substitute
+from misclosure.encoding import float_to_hex, is_scalar_node
+from misclosure.reference import Reference
+from misclosure.reference import load as load_reference
+from misclosure.selectors import SelectorError, select, select_all, substitute
 
 CASE_FORMAT = 1
 CHECKS = ("equals", "absent", "present", "value", "table", "same_keys", "json", "contains")
@@ -55,8 +55,8 @@ class CaseFile:
         data = read_structured_file(p)
         if not isinstance(data, dict):
             raise CaseFileError(f"{p}: expected a mapping at the top level")
-        if data.get("modelcheck") != CASE_FORMAT:
-            raise CaseFileError(f"{p}: set `modelcheck: {CASE_FORMAT}` at the top")
+        if data.get("misclosure") != CASE_FORMAT:
+            raise CaseFileError(f"{p}: set `misclosure: {CASE_FORMAT}` at the top")
         if "reference" not in data:
             raise CaseFileError(f"{p}: no `reference`")
         if not isinstance(data.get("cases"), list) or not data["cases"]:
@@ -234,7 +234,7 @@ class Runner:
         if self.workdir is not None:
             self.workdir.mkdir(parents=True, exist_ok=True)
             return await self._run(self.workdir)
-        with tempfile.TemporaryDirectory(prefix="modelcheck-") as tmp:
+        with tempfile.TemporaryDirectory(prefix="misclosure-") as tmp:
             return await self._run(Path(tmp))
 
     async def _run(self, workdir: Path) -> RunResult:

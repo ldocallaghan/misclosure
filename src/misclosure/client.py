@@ -24,7 +24,7 @@ from mcp.client.streamable_http import streamable_http_client
 from mcp.shared.message import SessionMessage
 from mcp_types import Implementation
 
-from modelcheck import __version__, jsonlit
+from misclosure import __version__, jsonlit
 
 
 @dataclass
@@ -299,7 +299,7 @@ class Connection:
             transport,  # type: ignore[arg-type]
             mode=self.spec.mode,
             cache=None,
-            client_info=Implementation(name="modelcheck", version=__version__),
+            client_info=Implementation(name="misclosure", version=__version__),
         )
         self._client = await self._cm.__aenter__()
         return self

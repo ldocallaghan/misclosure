@@ -9,9 +9,9 @@ from pathlib import Path
 import anyio
 import pytest
 
-from modelcheck.client import ServerSpec
-from modelcheck.conform import report
-from modelcheck.conform.runner import CaseFile, Runner
+from misclosure.client import ServerSpec
+from misclosure.conform import report
+from misclosure.conform.runner import CaseFile, Runner
 
 ROOT = Path(__file__).resolve().parent.parent
 CASES = ROOT / "examples/testserver/cases.yaml"

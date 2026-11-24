@@ -1,11 +1,11 @@
-# kite-mcp's evaluation (eval/ in kite-mcp), scored by modelcheck.
+# kite-mcp's evaluation (eval/ in kite-mcp), scored by misclosure.
 #
 #   export KITE_MCP_DIR=/path/to/kite-mcp
-#   modelcheck score examples/kite/eval.yaml
+#   misclosure score examples/kite/eval.yaml
 #
 # The rules below are those of kite-mcp's scorer, examples/score_eval.rs.
 
-modelcheck: 1
+misclosure: 1
 name: kite-mcp evaluation
 questions: questions.yaml
 
@@ -52,4 +52,4 @@ pass_bar:
 
 report:
   label_column: Covers
-  out: modelcheck-out/eval
+  out: misclosure-out/eval

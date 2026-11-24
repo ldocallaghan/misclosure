@@ -1,4 +1,4 @@
-"""Command line: `modelcheck conform`, `modelcheck score`, `modelcheck transcript`."""
+"""Command line: `misclosure conform`, `misclosure score`, `misclosure transcript`."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from pathlib import Path
 
 import anyio
 
-from modelcheck import __version__
+from misclosure import __version__
 
 
 def _leaf_errors(exc: BaseException) -> list[BaseException]:
@@ -19,10 +19,10 @@ def _leaf_errors(exc: BaseException) -> list[BaseException]:
 
 
 def _conform(args: argparse.Namespace) -> int:
-    from modelcheck.client import ServerSpec
-    from modelcheck.conform import report
-    from modelcheck.conform.runner import CaseFile, Runner
-    from modelcheck.reference import ReferenceError
+    from misclosure.client import ServerSpec
+    from misclosure.conform import report
+    from misclosure.conform.runner import CaseFile, Runner
+    from misclosure.reference import ReferenceError
 
     cf = CaseFile.load(args.cases)
     server = None
@@ -74,7 +74,7 @@ def _conform(args: argparse.Namespace) -> int:
 
 
 def _score(args: argparse.Namespace) -> int:
-    from modelcheck.score.scorer import run_score
+    from misclosure.score.scorer import run_score
 
     return run_score(
         Path(args.eval),
@@ -84,15 +84,15 @@ def _score(args: argparse.Namespace) -> int:
 
 
 def _transcript(args: argparse.Namespace) -> int:
-    from modelcheck.score.transcript import convert
+    from misclosure.score.transcript import convert
 
     convert(Path(args.input), Path(args.output), args.source_format, strip_prefix=args.strip_prefix)
     return 0
 
 
 def main(argv: list[str] | None = None) -> int:
-    p = argparse.ArgumentParser(prog="modelcheck", description=__doc__)
-    p.add_argument("--version", action="version", version=f"modelcheck {__version__}")
+    p = argparse.ArgumentParser(prog="misclosure", description=__doc__)
+    p.add_argument("--version", action="version", version=f"misclosure {__version__}")
     sub = p.add_subparsers(dest="command", required=True)
 
     c = sub.add_parser("conform", help="compare a server's output with reference values")
@@ -105,7 +105,7 @@ def main(argv: list[str] | None = None) -> int:
         "--reference", help="use this recorded reference file in place of the declared one"
     )
     c.add_argument("--case", action="append", help="run only this case; repeatable")
-    c.add_argument("--out", default="modelcheck-out", help="report directory")
+    c.add_argument("--out", default="misclosure-out", help="report directory")
     c.add_argument("--junit", help="path of the JUnit XML file")
     c.add_argument("--workdir", help="keep working files here")
     c.add_argument("--server-log", help="write the server's stderr to this file")
@@ -117,7 +117,7 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("--out", help="report directory (default: beside the evaluation file)")
     s.set_defaults(func=_score)
 
-    t = sub.add_parser("transcript", help="convert a transcript to the modelcheck format")
+    t = sub.add_parser("transcript", help="convert a transcript to the misclosure format")
     t.add_argument("input")
     t.add_argument("output")
     t.add_argument("--from", dest="source_format", default="claude-stream-json")

@@ -1,8 +1,8 @@
 # Quick start: the growth server in tests/server against its reference.
 #
-#   modelcheck conform examples/testserver/cases.yaml
+#   misclosure conform examples/testserver/cases.yaml
 
-modelcheck: 1
+misclosure: 1
 name: growth server
 
 reference:

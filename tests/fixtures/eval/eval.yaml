@@ -1,14 +1,14 @@
-modelcheck: 1
+misclosure: 1
 name: growth server evaluation
 questions: questions.yaml
 
 reference:
   file: reference.json
-  sha256: cbb42a10b4086bc7efabb8287bb31faccd1d4cd0a976b381268b25921b9c82ba
+  sha256: 9c9844de17838138c4305e98d55ce3fb887c9e89f8f42ad5216a2d6838ced5af
 
 transcripts:
   dir: transcripts
-  format: modelcheck
+  format: misclosure
 
 numbers:
   skip_code_blocks: all

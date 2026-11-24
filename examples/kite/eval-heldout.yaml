@@ -1,7 +1,7 @@
-# kite-mcp's held-out questions (eval/heldout/ in kite-mcp), scored by modelcheck.
+# kite-mcp's held-out questions (eval/heldout/ in kite-mcp), scored by misclosure.
 # The rules are those of eval.yaml.
 
-modelcheck: 1
+misclosure: 1
 name: kite-mcp held-out evaluation
 questions: questions-heldout.yaml
 
@@ -40,4 +40,4 @@ pass_bar:
 
 report:
   label_column: Covers
-  out: modelcheck-out/heldout
+  out: misclosure-out/heldout

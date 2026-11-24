@@ -14,14 +14,14 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import Any
 
-from modelcheck.encoding import (
+from misclosure.encoding import (
     decode_double,
     float_to_hex,
     is_scalar_node,
     is_table_node,
     label,
 )
-from modelcheck.jsonlit import Num
+from misclosure.jsonlit import Num
 
 DEFAULT_TOKENS = {"NA": "NA", "NaN": "NaN", "Inf": "Inf", "-Inf": "-Inf"}
 

@@ -1,15 +1,15 @@
-# The conformance cases of kite-mcp (tests/conformance.rs), as a modelcheck
+# The conformance cases of kite-mcp (tests/conformance.rs), as a misclosure
 # case file. Each case runs a scenario through the server, compares the info
 # block, the warnings, the headline and every table KITE returns with a
 # direct KITE run, and checks the table names.
 #
 #   export KITE_MCP_DIR=/path/to/kite-mcp      # for worker/synthetic.R
 #   export KITE_MCP_BIN=$KITE_MCP_DIR/target/release/kite-mcp
-#   modelcheck conform examples/kite/cases.yaml
+#   misclosure conform examples/kite/cases.yaml
 #
 # Needs R with KITE at commit 5995dd1, data.table and jsonlite.
 
-modelcheck: 1
+misclosure: 1
 name: KITE 26.10 through kite-mcp
 
 reference:

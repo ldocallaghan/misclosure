@@ -1,5 +1,5 @@
 # Reference values for the kite-mcp conformance cases: each case run by
-# calling KITE directly, encoded with modelcheck's R encoder. A port of
+# calling KITE directly, encoded with misclosure's R encoder. A port of
 # kite-mcp's tests/conformance/reference.R.
 #
 # The generated baseline uses kite-mcp's worker/synthetic.R, so the
@@ -11,31 +11,31 @@ args <- commandArgs(trailingOnly = TRUE)
 out <- args[[1]]
 csv_dir <- args[[2]]
 here <- dirname(normalizePath(sub("^--file=", "", grep("^--file=", commandArgs(FALSE), value = TRUE))))
-source(file.path(here, "..", "..", "encoders", "r", "modelcheck_encode.R"))
+source(file.path(here, "..", "..", "encoders", "r", "misclosure_encode.R"))
 kite_mcp <- Sys.getenv("KITE_MCP_DIR")
 if (!nzchar(kite_mcp)) stop("set KITE_MCP_DIR to a kite-mcp checkout")
 source(file.path(kite_mcp, "worker", "synthetic.R"))
 suppressPackageStartupMessages({ library(KITE); library(data.table) })
 
-mc_info <- function(info) {
+mcl_info <- function(info) {
   a <- info$accounting
-  list(convergence = mc_scalar(info$convergence),
-       criterion = mc_scalar(info$criterion),
-       iterations = mc_scalar(info$iterations),
-       accounting = list(ok = mc_scalar(a$ok), rule = mc_scalar(a$rule),
-                         world_trade_balance = mc_scalar(a$world_trade_balance),
-                         baseline_world_trade_balance = mc_scalar(a$baseline_world_trade_balance),
-                         world_value_added = mc_scalar(a$world_value_added),
-                         tolerance = mc_scalar(a$tolerance),
-                         reason = mc_scalar(a$reason)))
+  list(convergence = mcl_scalar(info$convergence),
+       criterion = mcl_scalar(info$criterion),
+       iterations = mcl_scalar(info$iterations),
+       accounting = list(ok = mcl_scalar(a$ok), rule = mcl_scalar(a$rule),
+                         world_trade_balance = mcl_scalar(a$world_trade_balance),
+                         baseline_world_trade_balance = mcl_scalar(a$baseline_world_trade_balance),
+                         world_value_added = mcl_scalar(a$world_value_added),
+                         tolerance = mcl_scalar(a$tolerance),
+                         reason = mcl_scalar(a$reason)))
 }
 
-mc_case <- function(info, output, warnings = list()) {
+mcl_case <- function(info, output, warnings = list()) {
   tables <- list()
   for (n in names(output)) {
-    if (is.data.frame(output[[n]])) tables[[n]] <- mc_table(output[[n]])
+    if (is.data.frame(output[[n]])) tables[[n]] <- mcl_table(output[[n]])
   }
-  list(info = mc_info(info), tables = tables, warnings = warnings)
+  list(info = mcl_info(info), tables = tables, warnings = warnings)
 }
 
 settings <- list(verbose = 0L, tolerance = 1e-4, vfactor = 0.1, max_iterations = 200)
@@ -50,7 +50,7 @@ run_case <- function(model, ic, scenario, settings) {
     warnings[[length(warnings) + 1L]] <<- list(class = as.list(class(w)), message = conditionMessage(w))
     invokeRestart("muffleWarning")
   })
-  mc_case(result$info, processed$output, warnings)
+  mcl_case(result$info, processed$output, warnings)
 }
 
 # `rate`, not `value`: inside data.table, `value` on the right of := names the column
@@ -67,9 +67,9 @@ cases <- list()
 # KITE's own example, through run_kite_example()
 source(system.file("examples", "example.R", package = "KITE"))
 ex <- run_kite_example()
-cases$example_cp <- mc_case(ex$cp$info, ex$cp_summary$output)
-cases$example_chkw <- mc_case(ex$chkw$info, ex$chkw_summary$output)
-cases$example_mw <- mc_case(ex$mw$info, ex$mw_summary$output)
+cases$example_cp <- mcl_case(ex$cp$info, ex$cp_summary$output)
+cases$example_chkw <- mcl_case(ex$chkw$info, ex$chkw_summary$output)
+cases$example_mw <- mcl_case(ex$mw$info, ex$mw_summary$output)
 ic <- ex$cp$initial_conditions
 ic_carbon <- ex$mw$initial_conditions
 
@@ -121,5 +121,5 @@ d <- utils::packageDescription("KITE")
 model <- list(name = "KITE", version = d$Version,
               commit = if (is.null(d$RemoteSha)) NULL else d$RemoteSha,
               r_version = paste(R.version$major, R.version$minor, sep = "."))
-mc_write_reference(cases, model, out)
+mcl_write_reference(cases, model, out)
 cat("wrote", length(cases), "cases to", out, "\n")

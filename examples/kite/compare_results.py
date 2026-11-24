@@ -1,6 +1,6 @@
-"""Compare a modelcheck results table with kite-mcp's results.md, row by row.
+"""Compare a misclosure results table with kite-mcp's results.md, row by row.
 
-    python compare_results.py $KITE_MCP_DIR/eval/results.md modelcheck-out/eval/results.md
+    python compare_results.py $KITE_MCP_DIR/eval/results.md misclosure-out/eval/results.md
 
 Compares every column: question, covers, tools called, numbers checked,
 unsupported numbers and trap outcome. Exits with status 1 on any difference.
@@ -29,9 +29,9 @@ def compare(kite: Path, ours: Path) -> list[str]:
     diffs = []
     for q in sorted(set(a) | set(b)):
         if q not in a or q not in b:
-            diffs.append(f"{q}: only in {'kite-mcp' if q in a else 'modelcheck'}")
+            diffs.append(f"{q}: only in {'kite-mcp' if q in a else 'misclosure'}")
         elif a[q] != b[q]:
-            diffs.append(f"{q}:\n  kite-mcp   {a[q]}\n  modelcheck {b[q]}")
+            diffs.append(f"{q}:\n  kite-mcp   {a[q]}\n  misclosure {b[q]}")
     return diffs
 
 

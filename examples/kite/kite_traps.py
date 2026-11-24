@@ -1,4 +1,4 @@
-"""kite-mcp's three trap checks (examples/score_eval.rs), as modelcheck trap rules.
+"""kite-mcp's three trap checks (examples/score_eval.rs), as misclosure trap rules.
 
 The evaluation files load this file through `traps.plugins`.
 """
@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import re
 
-from modelcheck.score.traps import TrapContext, trap_rule
+from misclosure.score.traps import TrapContext, trap_rule
 
 
 def yesno(b: bool) -> str:
