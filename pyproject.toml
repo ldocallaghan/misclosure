@@ -9,11 +9,37 @@ description = "Conformance tests and answer scoring for MCP servers of scientifi
 readme = "README.md"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
+authors = [{ name = "Liam O'Callaghan" }]
 requires-python = ">=3.11"
+keywords = [
+    "mcp",
+    "model-context-protocol",
+    "conformance",
+    "scientific-computing",
+    "numerical-models",
+    "ieee-754",
+    "llm-evaluation",
+    "testing",
+]
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Testing",
+]
 dependencies = [
     "mcp>=2.3,<3",
     "pyyaml>=6",
 ]
+
+[project.urls]
+Repository = "https://github.com/ldocallaghan/misclosure"
+Issues = "https://github.com/ldocallaghan/misclosure/issues"
 
 [project.scripts]
 misclosure = "misclosure.cli:main"
