@@ -253,8 +253,13 @@ class Runner:
             negotiation = conn.negotiation()
             saved: dict[str, Any] = {}
             setup = CaseResult("setup")
-            for i, step in enumerate(self.cf.data.get("setup", [])):
-                await self._step(conn, step, f"setup step {i + 1}", setup, saved, reference, ctx)
+            try:
+                for i, step in enumerate(self.cf.data.get("setup", [])):
+                    await self._step(
+                        conn, step, f"setup step {i + 1}", setup, saved, reference, ctx
+                    )
+            except (SelectorError, ValueError) as exc:
+                setup.error = str(exc)
             if setup.failures or setup.error:
                 results.append(setup)
             for case in self.cf.data["cases"]:

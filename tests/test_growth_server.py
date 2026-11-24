@@ -63,6 +63,24 @@ def test_bits_lost_in_json_are_reported_as_such():
     assert 'failures="1"' in junit and "json_precision" in junit
 
 
+def test_a_bad_selector_in_setup_is_reported_and_the_cases_run(tmp_path):
+    text = CASES.read_text()
+    text = text.replace(
+        "\ncases:",
+        "\nsetup:\n  - call: grow\n"
+        '    arguments: {principal: "${nothing.here}", rate: 0.05, years: 1}\n\ncases:',
+    )
+    text = text.replace("../../tests/server/", f"{SERVER.parent}/")
+    path = tmp_path / "cases.yaml"
+    path.write_text(text)
+    r = run(path)
+    assert not r.passed
+    setup = next(c for c in r.cases if c.id == "setup")
+    assert "no value named 'nothing'" in setup.error
+    assert [c.id for c in r.cases if c.id != "setup"] == ["five_percent", "awkward"]
+    assert all(c.passed for c in r.cases if c.id != "setup")
+
+
 def _free_port() -> int:
     with socket.socket() as s:
         s.bind(("127.0.0.1", 0))
