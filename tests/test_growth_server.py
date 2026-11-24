@@ -9,6 +9,7 @@ from pathlib import Path
 import anyio
 import pytest
 
+from misclosure import cli
 from misclosure.client import ServerSpec
 from misclosure.conform import report
 from misclosure.conform.runner import CaseFile, Runner
@@ -21,6 +22,15 @@ SERVER = ROOT / "tests/server/growth_server.py"
 
 def run(path, **kw):
     return anyio.run(Runner(CaseFile.load(path), **kw).run)
+
+
+def test_server_log_creates_its_folder(tmp_path):
+    log = tmp_path / "logs" / "run" / "server.log"
+    code = cli.main(
+        ["conform", str(CASES), "--server-log", str(log), "--out", str(tmp_path / "out")]
+    )
+    assert code == 0
+    assert log.is_file()
 
 
 @pytest.mark.parametrize("mode", ["auto", "legacy"])

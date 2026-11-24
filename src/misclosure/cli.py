@@ -36,7 +36,11 @@ def _conform(args: argparse.Namespace) -> int:
         spec = dict(cf.data.get("server") or {})
         spec["mode"] = args.mode
         cf.data["server"] = spec
-    errlog = open(args.server_log, "w", encoding="utf-8") if args.server_log else None  # noqa: SIM115
+    errlog = None
+    if args.server_log:
+        log = Path(args.server_log)
+        log.parent.mkdir(parents=True, exist_ok=True)
+        errlog = open(log, "w", encoding="utf-8")  # noqa: SIM115
     try:
         runner = Runner(
             cf,
