@@ -1,0 +1,33 @@
+name: Publish to PyPI
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: The release tag whose files to publish, such as v0.1.0
+        required: true
+
+jobs:
+  pypi:
+    name: Upload the release files to PyPI
+    runs-on: ubuntu-24.04
+    environment:
+      name: pypi
+      url: https://pypi.org/project/misclosure/
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      # The same setup-uv release as ci.yml.
+      - uses: astral-sh/setup-uv@v10.4.0
+      - name: Download the wheel and sdist from the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: gh release download "$TAG" -R "$GITHUB_REPOSITORY" -p '*.whl' -p '*.tar.gz' -D dist
+      - name: SHA-256 of the files to upload
+        run: sha256sum dist/*
+      - name: Upload with a trusted publisher
+        run: uv publish --trusted-publishing always dist/*
